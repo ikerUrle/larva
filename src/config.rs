@@ -127,15 +127,13 @@ impl Config {
             .long("input")
             .short("i")
             .takes_value(true)
-            .help("Path to input raster image")
-            .required(true));
+            .help("Path to input raster image"));
 
         let app = app.arg(Arg::with_name("output")
             .long("output")
             .short("o")
             .takes_value(true)
-            .help("Path to output vector graphics")
-            .required(true));
+            .help("Path to output vector graphics"));
 
         let app = app.arg(Arg::with_name("color_mode")
             .long("colormode")
@@ -206,8 +204,8 @@ impl Config {
         let matches = app.get_matches();
 
         let mut config = Config::default();
-        let input_path = matches.value_of("input").expect("Input path is required, please specify it by --input or -i.");
-        let output_path = matches.value_of("output").expect("Output path is required, please specify it by --output or -o.");
+        let input_path = "";
+        let output_path = "";
 
         if let Some(value) = matches.value_of("preset") {
             config = Self::from_preset(Preset::from_str(value).unwrap(), input_path, output_path);

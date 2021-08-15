@@ -1,7 +1,7 @@
-## Svg Convert
+## Larva
 
 > This project is based on code from [VTracer](https://github.com/visioncortex/vtracer/). 
 
-Convert base64 images to svg using Rust and WASM. 
+Larva converts base64 images to SVG using RUst and WASM.
 
 

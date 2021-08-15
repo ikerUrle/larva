@@ -1,14 +1,6 @@
-use vtracer::{Config, convert_image_to_svg};
-
+use std::fs;
 fn main() {
-    let config = Config::from_args();
-    let result = convert_image_to_svg(config);
-    match result {
-        Ok(()) => {
-            println!("Conversion successful.");
-        },
-        Err(msg) => {
-            panic!("Conversion failed with error message: {}", msg);
-        }
-    }
+    let img = fs::read_to_string("image.txt").expect("File not found");
+    let img = img.trim();
+    larva::convert(img);
 }

@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 use std::{fs::File, io::Write};
 use std::fs;
+use image::{DynamicImage};
 
 use visioncortex::{Color, ColorImage, ColorName};
 use visioncortex::color_clusters::{Runner, RunnerConfig, HIERARCHICAL_MAX};
@@ -9,17 +10,17 @@ use super::svg::SvgFile;
 extern crate photon_rs;
 
 /// Convert an image file into svg file
-pub fn convert_image_to_svg(config: Config) -> Result<(), String> {
+pub fn convert_image_to_svg(config: Config, img: &str) -> Result<SvgFile, String> {
     let config = config.into_converter_config();
     match config.color_mode {
-        ColorMode::Color => color_image_to_svg(config),
-        ColorMode::Binary => binary_image_to_svg(config),
+        ColorMode::Color => color_image_to_svg(config, img),
+        ColorMode::Binary => binary_image_to_svg(config, img),
     }
 }
 
-fn color_image_to_svg(config: ConverterConfig) -> Result<(), String> {
+fn color_image_to_svg(config: ConverterConfig, img_str: &str) -> Result<SvgFile, String> {
     let (img, width, height);
-    match read_image() {
+    match read_image(img_str) {
         Ok(values) => {
             img = values.0;
             width = values.1;
@@ -79,13 +80,14 @@ fn color_image_to_svg(config: ConverterConfig) -> Result<(), String> {
         svg.add_path(paths, cluster.residue_color());
     }
 
-    write_svg(svg, config.output_path)
+    // write_svg(svg, config.output_path)
+    Ok(svg)
 }
 
-fn binary_image_to_svg(config: ConverterConfig) -> Result<(), String> {
+fn binary_image_to_svg(config: ConverterConfig, img_str: &str) -> Result<SvgFile, String> {
 
     let (img, width, height);
-    match read_image() {
+    match read_image(img_str) {
         Ok(values) => {
             img = values.0;
             width = values.1;
@@ -112,21 +114,17 @@ fn binary_image_to_svg(config: ConverterConfig) -> Result<(), String> {
         }
     }
 
-    write_svg(svg, config.output_path)
+    // write_svg(svg, config.output_path)
+    Ok(svg)
 }
 
-fn read_image() -> Result<(ColorImage, usize, usize), String> {
-    let img = image::open(PathBuf::from("input.png"));
-    let img_base64 = fs::read_to_string("image.txt").expect("File not found");
-    let img_base64 = img_base64.trim();
-    let img = photon_rs::base64_to_image(&img_base64);
-    println!("toImage good");
-    let img = photon_rs::helpers::dyn_image_from_raw(&img).to_rgba8();
-    img.save(PathBuf::from("image_converted.png")).expect("error Saving fileee");
+fn read_image(img_base64: &str) -> Result<(ColorImage, usize, usize), String> {
     // let img = match img {
     //     Ok(file) => file.to_rgba8(),
     //     Err(_) => return Err(String::from("No image file found at specified input path")),
     // };
+    let img = photon_rs::base64_to_image(&img_base64);
+    let img = photon_rs::helpers::dyn_image_from_raw(&img).to_rgba8();
 
     let (width, height) = (img.width() as usize, img.height() as usize);
     let img = ColorImage {pixels: img.as_raw().to_vec(), width, height};
@@ -135,7 +133,8 @@ fn read_image() -> Result<(ColorImage, usize, usize), String> {
 }
 
 fn write_svg(svg: SvgFile, output_path: PathBuf) -> Result<(), String> {
-    let out_file = File::create(output_path);
+    // let out_file = File::create(output_path);
+    let out_file = File::create("result.svg");
     let mut out_file = match out_file {
         Ok(file) => file,
         Err(_) => return Err(String::from("Cannot create output file.")),
