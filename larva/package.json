@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview"
+    "build:lint": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
+    "serve": "vite preview",
+    "deploy" : "node scripts/gh-pages-deploy.js"
   },
   "dependencies": {
     "larva": "file:../larva_rs/pkg",
