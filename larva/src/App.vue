@@ -1,12 +1,14 @@
 <template>
   <div class="page">
-    <div class="page_nav">
-    <h1>Larva - SVG Image converter</h1>
+    <div class="page__nav">
+    <h1>Larva</h1>
+    <h2>SVG Image converter</h2>
     </div>
     <div class="page__main">
     <div class="page__main__dropzone" v-bind="getRootProps()">
       <input v-bind="getInputProps()" >
-      <p>Drop a file, or click here to convert to SVG</p>
+      <p v-if="loading">Converting...</p>
+      <p v-else>Drop a file, or click here to convert to SVG</p>
     </div>
     <div class="page__main__preview__container" >
       <div id="svg" v-html="svgImage" />
@@ -16,12 +18,14 @@
 </template>
 
 <script setup lang="ts">
-import init, {convert} from 'larva'
+import { convert } from 'larva_rs'
 import { ref } from 'vue'
 import { useDropzone } from 'vue3-dropzone'
 
+const loading = ref(false)
 const onDrop = (acceptFiles:any, rejectReasons:any) => {
   let file = acceptFiles[0]
+  loading.value = true
   var reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload =  () => {
@@ -29,13 +33,15 @@ const onDrop = (acceptFiles:any, rejectReasons:any) => {
     let img = reader.result?.toString().split(',')[1]!
     var svg = convert(img)
     svgImage.value = svg
+    loading.value = false
   }
   reader.onerror = (error) => {
+    loading.value = false
     console.log('Error: ', error);
   }
 }
 const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop })
-init()
+
 let svgImage = ref("Preview will be shown here")
 </script>
 
@@ -45,23 +51,66 @@ let svgImage = ref("Preview will be shown here")
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: var(--primary-color);
+  --primary-color: rgb(255, 255, 255);
+  --secondary-color: rgb(124, 108, 128);
+  --accent-color: rgb(113, 59, 129);
+  --background: #000;
+  background: var(--background);
+  height: 100%;
+}
+html,body{
+  margin:0;
+  height: 100%;
+  background: var(--background);
+}
+.page{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height:100%;
+  background-image: linear-gradient(to bottom, #343536, #2d3642, #2c354e, #333257, #412c5c);
 }
 .page__main {
   display:flex;
-  max-height: 20rem;
+  /* max-height: 20rem; */
+  gap: 2rem;
+}
+.page__nav {
+  position: absolute;
+  top:0;
+  left:0;
+  display:flex;
+  gap: .4rem;
+  align-items: baseline;
+  padding: 0 .4rem;
+}
+.page__nav h2 {
+  color: var(--secondary-color);
+  font-size: 1.4rem;
 }
 #svg{
   max-height: 20rem !important;
 }
-.page__main__dropzone {
+.page__main__dropzone , .page__main__preview__container{
+  /* flex-basis: 40%; */
   padding: 2rem;
   border: .2rem dashed lightgray;
-  margin: 0 2rem;
+  /* margin: 0 2rem; */
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  border-radius: 100%;
+  height: 10rem;
+  width: 10rem;
 }
 .page__main__preview__container {
+  /* flex-basis: 50%; */
   max-height: 80vh;
   overflow: auto;
+  height: 20rem;
+  width:20rem;
 }
 </style>
