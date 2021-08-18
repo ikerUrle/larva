@@ -11,7 +11,7 @@
   "dependencies": {
     "larva_rs": "^0.1.1",
     "vue": "^3.0.5",
-    "vue3-dropzone": "0.0.7"
+    "vue-use-dropzone": "^0.1.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.3.0",

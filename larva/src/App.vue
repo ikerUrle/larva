@@ -1,8 +1,11 @@
 <template>
   <div class="page">
     <div class="page__nav">
-    <h1>Larva</h1>
-    <h2>SVG Image converter</h2>
+    <img class="page__nav__logo" src="/larva.svg" />
+    <div class="page__nav__title">
+      <h1>Larva</h1>
+      <h2>SVG Image Converter</h2>
+    </div>
     </div>
     <div class="page__main">
     <div class="page__main__dropzone" v-bind="getRootProps()">
@@ -20,7 +23,7 @@
 <script setup lang="ts">
 import { convert } from 'larva_rs'
 import { ref } from 'vue'
-import { useDropzone } from 'vue3-dropzone'
+import { useDropzone } from 'vue-use-dropzone'
 
 const loading = ref(false)
 const onDrop = (acceptFiles:any, rejectReasons:any) => {
@@ -47,14 +50,14 @@ let svgImage = ref("Preview will be shown here")
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Quicksand", Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--primary-color);
   --primary-color: rgb(255, 255, 255);
-  --secondary-color: rgb(124, 108, 128);
-  --accent-color: rgb(113, 59, 129);
+  --secondary-color: rgb(217, 216, 218);
+  --accent-color: rgb(52, 189, 125);
   --background: #000;
   background: var(--background);
   height: 100%;
@@ -70,7 +73,8 @@ html,body{
   justify-content: center;
   align-items: center;
   height:100%;
-  background-image: linear-gradient(to bottom, #343536, #2d3642, #2c354e, #333257, #412c5c);
+  /* background-image: linear-gradient(to bottom, #343536, #2d3642, #2c354e, #333257, #412c5c); */
+  background-image: linear-gradient(to bottom, #323031, #312f31, #2f2f30, #2e2f30, #2d2e2f, #2c3033, #2a3236, #273439, #1f3a3d, #193f3d, #1a4437, #25482e);
 }
 .page__main {
   display:flex;
@@ -83,15 +87,27 @@ html,body{
   left:0;
   display:flex;
   gap: .4rem;
-  align-items: baseline;
+  align-items: center;
   padding: 0 .4rem;
+}
+.page__nav img {
+  height: 7rem;
+}
+.page__nav__title{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.page__nav__title > * {
+  margin:0;
 }
 .page__nav h2 {
   color: var(--secondary-color);
   font-size: 1.4rem;
 }
 #svg{
-  max-height: 20rem !important;
+  /* max-height: 20rem !important; */
 }
 .page__main__dropzone , .page__main__preview__container{
   /* flex-basis: 40%; */
@@ -108,9 +124,9 @@ html,body{
 }
 .page__main__preview__container {
   /* flex-basis: 50%; */
-  max-height: 80vh;
-  overflow: auto;
+  /* max-height: 80vh; */
+  /* overflow: auto;
   height: 20rem;
-  width:20rem;
+  width:20rem; */
 }
 </style>
