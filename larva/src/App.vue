@@ -8,14 +8,13 @@
     </div>
     </div>
     <div class="page__main">
-    <div class="page__main__dropzone" v-bind="getRootProps()">
+    <div class="card main" v-bind="getRootProps()">
       <input v-bind="getInputProps()" >
       <p v-if="loading">Converting...</p>
       <p v-else>Drop a file, or click here to convert to SVG</p>
     </div>
-    <div class="page__main__preview__container" >
-      <div id="svg" v-html="svgImage" />
-    </div>
+    <img class="card preview" :src="previewUrl" alt="Result will be shown here">
+    <div class="card download" @click="onDownloadClick">Download</div>
     </div>
   </div>
 </template>
@@ -26,16 +25,26 @@ import { ref } from 'vue'
 import { useDropzone } from 'vue-use-dropzone'
 
 const loading = ref(false)
+const previewUrl = ref('')
+
+let resultSvg = ''
+let dropPath = 'result.svg'
+
 const onDrop = (acceptFiles:any, rejectReasons:any) => {
   let file = acceptFiles[0]
+  if (file.type !== 'image/png') return alert('Only pngs please')
+  dropPath = file.path.replace('.*','.svg')
   loading.value = true
-  var reader = new FileReader();
-  reader.readAsDataURL(file);
+  var reader = new FileReader()
+  reader.readAsDataURL(file)
   reader.onload =  () => {
     //Remove data:... part from string
     let img = reader.result?.toString().split(',')[1]!
     var svg = convert(img)
-    svgImage.value = svg
+    resultSvg = svg.trim()
+    var blob = new Blob([svg], {type:"image/svg+xml;charset=utf-8"})
+    var domURL = self.URL || self.webkitURL || self
+    previewUrl.value = domURL.createObjectURL(blob)
     loading.value = false
   }
   reader.onerror = (error) => {
@@ -45,7 +54,12 @@ const onDrop = (acceptFiles:any, rejectReasons:any) => {
 }
 const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop })
 
-let svgImage = ref("Preview will be shown here")
+const onDownloadClick= () => {
+  var element = document.createElement('a')
+  element.setAttribute('href', 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(resultSvg))
+  element.setAttribute('download', dropPath)
+  element.click()
+}
 </script>
 
 <style>
@@ -73,13 +87,12 @@ html,body{
   justify-content: center;
   align-items: center;
   height:100%;
-  /* background-image: linear-gradient(to bottom, #343536, #2d3642, #2c354e, #333257, #412c5c); */
   background-image: linear-gradient(to bottom, #323031, #312f31, #2f2f30, #2e2f30, #2d2e2f, #2c3033, #2a3236, #273439, #1f3a3d, #193f3d, #1a4437, #25482e);
 }
 .page__main {
   display:flex;
-  /* max-height: 20rem; */
-  gap: 2rem;
+  gap: 4rem;
+  align-items: center;
 }
 .page__nav {
   position: absolute;
@@ -106,14 +119,9 @@ html,body{
   color: var(--secondary-color);
   font-size: 1.4rem;
 }
-#svg{
-  /* max-height: 20rem !important; */
-}
-.page__main__dropzone , .page__main__preview__container{
-  /* flex-basis: 40%; */
+.card {
   padding: 2rem;
-  border: .2rem dashed lightgray;
-  /* margin: 0 2rem; */
+  border: .1rem solid rgb(102, 102, 102);
   display:flex;
   align-items: center;
   justify-content: center;
@@ -122,11 +130,14 @@ html,body{
   height: 10rem;
   width: 10rem;
 }
-.page__main__preview__container {
-  /* flex-basis: 50%; */
-  /* max-height: 80vh; */
-  /* overflow: auto;
+.preview {
+  color: var(--secondary-color);
+  padding: 0;
+  height: 14rem;
+  width: 14rem;
+}
+.main {
   height: 20rem;
-  width:20rem; */
+  width: 20rem;
 }
 </style>
