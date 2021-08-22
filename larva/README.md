@@ -15,4 +15,4 @@ Or just run it locally using:
 
 # License
 
-[MIT](https://mit-license.org/)
+[MIT](https://choosealicense.com/licenses/mit/)

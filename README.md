@@ -6,7 +6,7 @@
 
 Larva converts PNG images to SVG without code executed on the server. That's the reason Larva has NO COST for the user and NO ADS!
 
-This is made posible by WebAssembly.
+This is made possible by WebAssembly.
 
 # Usage 
 - Check the app [here!](https://ikerurle.github.com/larva)
@@ -15,7 +15,7 @@ This is made posible by WebAssembly.
 
 # License
 
-[MIT](https://mit-license.org/)
+[MIT](https://choosealicense.com/licenses/mit/)
 
 # Disclaimer
 This project is based on code from [VTracer](https://github.com/visioncortex/vtracer/). 
