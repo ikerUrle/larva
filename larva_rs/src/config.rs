@@ -1,5 +1,4 @@
 use std::str::FromStr;
-use std::path::PathBuf;
 use clap::{Arg, App};
 use visioncortex::PathSimplifyMode;
 
@@ -21,8 +20,6 @@ pub enum Hierarchical {
 
 /// Converter config
 pub struct Config {
-    pub input_path: PathBuf,
-    pub output_path: PathBuf,
     pub color_mode: ColorMode,
     pub hierarchical: Hierarchical,
     pub filter_speckle: usize,
@@ -37,8 +34,6 @@ pub struct Config {
 }
 
 pub(crate) struct ConverterConfig {
-    pub input_path: PathBuf,
-    pub output_path: PathBuf,
     pub color_mode: ColorMode,
     pub hierarchical: Hierarchical,
     pub filter_speckle_area: usize,
@@ -55,8 +50,6 @@ pub(crate) struct ConverterConfig {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            input_path: PathBuf::default(),
-            output_path: PathBuf::default(),
             color_mode: ColorMode::Color,
             hierarchical: Hierarchical::Stacked,
             mode: PathSimplifyMode::Spline,
@@ -204,16 +197,9 @@ impl Config {
         let matches = app.get_matches();
 
         let mut config = Config::default();
-        let input_path = "";
-        let output_path = "";
+        
 
-        if let Some(value) = matches.value_of("preset") {
-            config = Self::from_preset(Preset::from_str(value).unwrap(), input_path, output_path);
-        }
-
-        config.input_path = PathBuf::from(input_path);
-        config.output_path = PathBuf::from(output_path);
-
+       
         if let Some(value) = matches.value_of("color_mode") {
             config.color_mode = ColorMode::from_str(if value.trim() == "bw" || value.trim() == "BW" {"binary"} else {"color"}).unwrap()
         }
@@ -319,62 +305,10 @@ impl Config {
         config
     }
 
-    pub fn from_preset(preset: Preset, input_path: &str, output_path: &str) -> Self {
-        let input_path = PathBuf::from(input_path);
-        let output_path = PathBuf::from(output_path);
-        match preset {
-            Preset::Bw => Self {
-                input_path,
-                output_path,
-                color_mode: ColorMode::Binary,
-                hierarchical: Hierarchical::Stacked,
-                filter_speckle: 4,
-                color_precision: 6,
-                layer_difference: 16,
-                mode: PathSimplifyMode::Spline,
-                corner_threshold: 60,
-                length_threshold: 4.0,
-                max_iterations: 10,
-                splice_threshold: 45,
-                path_precision: Some(8),
-            },
-            Preset::Poster => Self {
-                input_path,
-                output_path,
-                color_mode: ColorMode::Color,
-                hierarchical: Hierarchical::Stacked,
-                filter_speckle: 4,
-                color_precision: 8,
-                layer_difference: 16,
-                mode: PathSimplifyMode::Spline,
-                corner_threshold: 60,
-                length_threshold: 4.0,
-                max_iterations: 10,
-                splice_threshold: 45,
-                path_precision: Some(8),
-            },
-            Preset::Photo => Self {
-                input_path,
-                output_path,
-                color_mode: ColorMode::Color,
-                hierarchical: Hierarchical::Stacked,
-                filter_speckle: 10,
-                color_precision: 8,
-                layer_difference: 48,
-                mode: PathSimplifyMode::Spline,
-                corner_threshold: 180,
-                length_threshold: 4.0,
-                max_iterations: 10,
-                splice_threshold: 45,
-                path_precision: Some(8),
-            }
-        }
-    }
+  
 
     pub(crate) fn into_converter_config(self) -> ConverterConfig {
         ConverterConfig {
-            input_path: self.input_path,
-            output_path: self.output_path,
             color_mode: self.color_mode,
             hierarchical: self.hierarchical,
             filter_speckle_area: self.filter_speckle * self.filter_speckle,

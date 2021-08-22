@@ -1,7 +1,5 @@
-use std::path::PathBuf;
-use std::{fs::File, io::Write};
-use std::fs;
-use image::{DynamicImage};
+// use std::path::PathBuf;
+// use std::{fs::File, io::Write};
 
 use visioncortex::{Color, ColorImage, ColorName};
 use visioncortex::color_clusters::{Runner, RunnerConfig, HIERARCHICAL_MAX};
@@ -132,15 +130,15 @@ fn read_image(img_base64: &str) -> Result<(ColorImage, usize, usize), String> {
     Ok((img, width, height))
 }
 
-fn write_svg(svg: SvgFile, output_path: PathBuf) -> Result<(), String> {
-    // let out_file = File::create(output_path);
-    let out_file = File::create("result.svg");
-    let mut out_file = match out_file {
-        Ok(file) => file,
-        Err(_) => return Err(String::from("Cannot create output file.")),
-    };
+// fn write_svg(svg: SvgFile, output_path: PathBuf) -> Result<(), String> {
+//     // let out_file = File::create(output_path);
+//     let out_file = File::create("result.svg");
+//     let mut out_file = match out_file {
+//         Ok(file) => file,
+//         Err(_) => return Err(String::from("Cannot create output file.")),
+//     };
 
-    write!(&mut out_file, "{}", svg).expect("failed to write file.");
+//     write!(&mut out_file, "{}", svg).expect("failed to write file.");
 
-    Ok(())
-}
+//     Ok(())
+// }
